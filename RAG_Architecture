@@ -1,0 +1,61 @@
+## 🏗️ Architecture
+
+                 ┌─────────────────┐
+                 │   PDF Document  │
+                 └────────┬────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │  PDF Loader     │
+                 │ (PyPDFLoader)   │
+                 └────────┬────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │ Text Chunking   │
+                 │ (LangChain)     │
+                 └────────┬────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │   Embeddings    │
+                 │ HuggingFace     │
+                 └────────┬────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │  FAISS Vector   │
+                 │   Database      │
+                 └────────┬────────┘
+                          │
+                          │
+         User Query       │
+              │           │
+              ▼           ▼
+       ┌───────────────────────┐
+       │ Retriever (Top-K Docs)│
+       └───────────┬───────────┘
+                   │
+                   ▼
+       ┌───────────────────────┐
+       │ Google Gemini LLM     │
+       └───────────┬───────────┘
+                   │
+                   ▼
+       ┌───────────────────────┐
+       │ Final Answer + Source │
+       └───────────────────────┘
+
+
+
+### Architecture Flow
+
+1. PDF documents are loaded using PyPDFLoader.
+2. Text is split into smaller chunks using LangChain Text Splitter.
+3. Chunks are converted into vector embeddings using HuggingFace Embeddings.
+4. Embeddings are stored in a FAISS Vector Database.
+5. User queries are converted into embeddings.
+6. FAISS retrieves the most relevant chunks.
+7. Retrieved context is passed to Google's Gemini LLM.
+8. Gemini generates a context-aware answer.
+9. The chatbot returns the answer along with source references.
